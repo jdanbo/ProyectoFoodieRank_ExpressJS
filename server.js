@@ -4,14 +4,17 @@ const cors = require('cors');
 const rateLimit = require('express-rate-limit');
 const { connectDB } = require('./src/config/database');
 const passport = require('./src/config/passport');
+
+// Importación de rutas versionadas
 const authRoutes = require('./src/routes/v1/auth.routes');
+const categoryRoutes = require('./src/routes/v1/category.routes');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-// Rate limiting (evitar abusos de peticiones)
+// Rate limiting
 const limiter = rateLimit({
-  windowMs: 15 * 60 * 1000, // 15 minutos
+  windowMs: 15 * 60 * 1000,
   max: 100,
   message: { ok: false, message: 'Demasiadas peticiones desde esta IP, intente más tarde.' }
 });
@@ -24,6 +27,7 @@ app.use(passport.initialize());
 
 // Rutas versionadas (SemVer v1)
 app.use('/api/v1/auth', authRoutes);
+app.use('/api/v1/categories', categoryRoutes);
 
 // Endpoint de prueba de salud
 app.get('/api/v1/health', (req, res) => {
