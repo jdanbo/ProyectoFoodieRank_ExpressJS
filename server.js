@@ -2,8 +2,13 @@ require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
 const rateLimit = require('express-rate-limit');
+
 const { connectDB } = require('./src/config/database');
 const passport = require('./src/config/passport');
+
+// swagger-ui-express for API documentation
+const swaggerUi = require('swagger-ui-express');
+const swaggerDocument = require('./src/docs/swagger.json');
 
 // Importación de rutas versionadas
 const authRoutes = require('./src/routes/v1/auth.routes');
@@ -27,6 +32,9 @@ app.use(express.json());
 app.use(limiter);
 app.use(passport.initialize());
 
+// Documentación interactiva Swagger UI
+app.use('/api/v1/docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
+
 // Rutas versionadas (SemVer v1)
 app.use('/api/v1/auth', authRoutes);
 app.use('/api/v1/categories', categoryRoutes);
@@ -42,5 +50,6 @@ app.get('/api/v1/health', (req, res) => {
 connectDB().then(() => {
   app.listen(PORT, () => {
     console.log(`Servidor corriendo en http://localhost:${PORT}`);
+    console.log(`Documentación Swagger disponible en http://localhost:${PORT}/api/v1/docs`);
   });
 });
