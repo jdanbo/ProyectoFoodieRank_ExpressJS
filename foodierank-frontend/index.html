@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FoodieRank - Calificaciones y Rankings Gastronómicos</title>
+  <link rel="stylesheet" href="assets/css/styles.css">
+  <style>
+    .hero {
+      text-align: center;
+      padding: 80px 20px;
+      max-width: 800px;
+      margin: 0 auto;
+    }
+    .hero h1 {
+      font-size: 3rem;
+      line-height: 1.2;
+      margin-bottom: 20px;
+    }
+    .hero p {
+      font-size: 1.15rem;
+      color: var(--text-secondary);
+      margin-bottom: 35px;
+    }
+    .features {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 25px;
+      margin-top: 40px;
+      margin-bottom: 60px;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div class="container nav-bar">
+      <a href="index.html" class="logo">Foodie<span>Rank</span></a>
+      <nav>
+        <ul class="nav-links">
+          <li><a href="restaurants.html">Restaurantes</a></li>
+          <li id="nav-user-actions"></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <main class="container">
+    <section class="hero">
+      <h1>Descubre los mejores sabores con el ranking de la comunidad</h1>
+      <p>Calificaciones reales, platos destacados y un sistema de ranking ponderado sin trampas ni favoritismos.</p>
+      <div style="display: flex; gap: 15px; justify-content: center;">
+        <a href="restaurants.html" class="btn btn-primary" style="padding: 12px 28px; font-size: 1rem;">Explorar Lugares</a>
+        <a href="register.html" class="btn btn-secondary" style="padding: 12px 28px; font-size: 1rem;">Crear Cuenta</a>
+      </div>
+    </section>
+
+    <section class="features">
+      <div class="card">
+        <h3 style="margin-bottom: 10px; color: var(--primary);">Transparencia Real</h3>
+        <p style="color: var(--text-secondary); font-size: 0.9rem;">Ranking ponderado matemáticamente por calificaciones, likes, dislikes y antigüedad de opiniones.</p>
+      </div>
+      <div class="card">
+        <h3 style="margin-bottom: 10px; color: var(--accent-gold);">Comunidad Activa</h3>
+        <p style="color: var(--text-secondary); font-size: 0.9rem;">Vota por las mejores reseñas y ayuda a destacar las críticas más honestas de cada restaurante.</p>
+      </div>
+      <div class="card">
+        <h3 style="margin-bottom: 10px; color: var(--accent-green);">Moderación Total</h3>
+        <p style="color: var(--text-secondary); font-size: 0.9rem;">Todos los restaurantes y platos pasan por aprobación previa para garantizar información verídica.</p>
+      </div>
+    </section>
+  </main>
+
+  <script src="js/api.js"></script>
+</body>
+</html>
