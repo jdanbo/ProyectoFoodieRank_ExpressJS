@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FoodieRank - Panel de Administración</title>
+  <link rel="stylesheet" href="assets/css/styles.css">
+  <style>
+    .admin-layout {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 30px;
+    }
+    @media (min-width: 900px) {
+      .admin-layout {
+        grid-template-columns: 380px 1fr;
+      }
+    }
+    .table-container {
+      overflow-x: auto;
+      margin-top: 15px;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.9rem;
+    }
+    th, td {
+      padding: 12px 14px;
+      text-align: left;
+      border-bottom: 1px solid var(--border-subtle);
+    }
+    th {
+      color: var(--text-muted);
+      font-weight: 600;
+      text-transform: uppercase;
+      font-size: 0.75rem;
+    }
+    .action-btn {
+      padding: 4px 10px;
+      font-size: 0.8rem;
+      border-radius: 6px;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div class="container nav-bar">
+      <a href="index.html" class="logo">Foodie<span>Rank</span></a>
+      <nav>
+        <ul class="nav-links">
+          <li><a href="restaurants.html">Restaurantes</a></li>
+          <li id="nav-user-actions"></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <main class="container" style="padding: 40px 20px; flex: 1;">
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px;">
+      <div>
+        <h1 style="font-size: 2rem;">Panel Administrativo</h1>
+        <p style="color: var(--text-secondary); font-size: 0.9rem;">Control de categorías y moderación de contenido</p>
+      </div>
+      <span class="badge badge-gold">Modo Administrador</span>
+    </div>
+
+    <div id="admin-alert" class="alert"></div>
+
+    <div class="admin-layout">
+      <!-- Columna 1: Crear Categorías -->
+      <section class="card" style="height: fit-content;">
+        <h2 style="font-size: 1.25rem; margin-bottom: 15px;">Nueva Categoría</h2>
+        <form id="create-category-form">
+          <div class="form-group">
+            <label for="cat-nombre">Nombre de Categoría</label>
+            <input type="text" id="cat-nombre" class="form-control" placeholder="Ej. Sushi, Pastas..." required minlength="3">
+          </div>
+          <div class="form-group">
+            <label for="cat-desc">Descripción (Opcional)</label>
+            <textarea id="cat-desc" class="form-control" rows="3" placeholder="Breve detalle"></textarea>
+          </div>
+          <button type="submit" id="btn-save-cat" class="btn btn-primary" style="width: 100%;">
+            Guardar Categoría
+          </button>
+        </form>
+
+        <h3 style="font-size: 1.05rem; margin-top: 30px; margin-bottom: 10px;">Categorías Activas</h3>
+        <div id="categories-summary" style="display: flex; flex-wrap: gap; gap: 8px;">
+          <!-- Inyección dinámica -->
+        </div>
+      </section>
+
+      <!-- Columna 2: Moderar Restaurantes Pendientes -->
+      <section class="card">
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+          <h2 style="font-size: 1.25rem;">Restaurantes por Aprobar</h2>
+          <button id="btn-refresh" class="btn btn-secondary" style="padding: 6px 12px; font-size: 0.8rem;">Refrescar</button>
+        </div>
+
+        <div class="table-container">
+          <table>
+            <thead>
+              <tr>
+                <th>Nombre</th>
+                <th>Ubicación</th>
+                <th>Fecha</th>
+                <th>Acción</th>
+              </tr>
+            </thead>
+            <tbody id="pending-restaurants-tbody">
+              <!-- Inyección dinámica -->
+            </tbody>
+          </table>
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <script src="js/api.js"></script>
+  <script src="js/admin.js"></script>
+</body>
+</html>
