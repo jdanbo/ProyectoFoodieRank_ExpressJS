@@ -9,6 +9,7 @@ const passport = require('./src/config/passport');
 const authRoutes = require('./src/routes/v1/auth.routes');
 const categoryRoutes = require('./src/routes/v1/category.routes');
 const restaurantRoutes = require('./src/routes/v1/restaurant.routes');
+const reviewRoutes = require('./src/routes/v1/review.routes');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -30,6 +31,7 @@ app.use(passport.initialize());
 app.use('/api/v1/auth', authRoutes);
 app.use('/api/v1/categories', categoryRoutes);
 app.use('/api/v1/restaurants', restaurantRoutes);
+app.use('/api/v1/reviews', reviewRoutes);
 
 // Endpoint de prueba de salud
 app.get('/api/v1/health', (req, res) => {
