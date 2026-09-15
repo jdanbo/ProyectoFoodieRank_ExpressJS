@@ -13,16 +13,11 @@ document.addEventListener('DOMContentLoaded', () => {
     statusMessage.style.display = 'block';
   }
 
-  function clearMessage() {
-    if (statusMessage) statusMessage.style.display = 'none';
-  }
-
-  // 1. Cargar selector de Categorías
   async function loadCategories() {
     try {
-      const response = await apiRequest('/categories');
-      if (response.ok && response.data) {
-        response.data.forEach(cat => {
+      const res = await apiRequest('/categories');
+      if (res.ok && res.data) {
+        res.data.forEach(cat => {
           const opt = document.createElement('option');
           opt.value = cat._id;
           opt.textContent = cat.nombre;
@@ -30,33 +25,27 @@ document.addEventListener('DOMContentLoaded', () => {
         });
       }
     } catch (err) {
-      console.error('Error cargando categorías:', err.message);
+      console.error(err);
     }
   }
 
-  // 2. Obtener Restaurantes (con filtro de categoría opcional)
   async function fetchRestaurants(categoryId = '') {
-    clearMessage();
-    grid.innerHTML = '<p style="color: var(--text-secondary);">Cargando restaurantes...</p>';
-
+    grid.innerHTML = '<p style="color: var(--text-secondary); grid-column: 1/-1; text-align: center;">Cargando experiencias gastronómicas...</p>';
     try {
-      const endpoint = categoryId ? `/restaurants?categoriaId=${categoryId}` : '/restaurants';
-      const response = await apiRequest(endpoint);
-
-      if (response.ok) {
-        currentRestaurants = response.data;
+      const url = categoryId ? `/restaurants?categoriaId=${categoryId}` : '/restaurants';
+      const res = await apiRequest(url);
+      if (res.ok) {
+        currentRestaurants = res.data;
         applySortingAndRender();
       }
     } catch (err) {
       grid.innerHTML = '';
-      showMessage(err.message || 'No se pudieron obtener los restaurantes.');
+      showMessage(err.message || 'Error cargando restaurantes');
     }
   }
 
-  // 3. Ordenar y Renderizar Cards
   function applySortingAndRender() {
     const sortBy = sortFilter.value;
-
     let sorted = [...currentRestaurants];
 
     if (sortBy === 'ranking-desc') {
@@ -70,13 +59,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
   function renderCards(restaurants) {
     grid.innerHTML = '';
-
     if (!restaurants || restaurants.length === 0) {
-      grid.innerHTML = `
-        <div style="grid-column: 1 / -1; text-align: center; padding: 40px; color: var(--text-secondary);">
-          No se encontraron restaurantes aprobados en esta categoría.
-        </div>
-      `;
+      grid.innerHTML = '<div style="grid-column: 1 / -1; text-align: center; color: var(--text-secondary);">No se encontraron restaurantes en esta categoría.</div>';
       return;
     }
 
@@ -84,53 +68,46 @@ document.addEventListener('DOMContentLoaded', () => {
       const card = document.createElement('article');
       card.className = 'card restaurant-card';
 
-      // Imagen fallback si no tiene URL
-      const imgSource = rest.imagenUrl && rest.imagenUrl.trim() !== ''
-        ? rest.imagenUrl
-        : 'https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=600&auto=format&fit=crop&q=80';
-
-      const rankingDisplay = (rest.ranking !== undefined && rest.ranking !== null)
-        ? Number(rest.ranking).toFixed(1)
-        : '0.0';
+      const img1 = rest.imagenUrl || 'https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=600';
+      const img2 = rest.imagenFachada2 || rest.imagenUrl;
+      const rankingFormatted = Number(rest.ranking || 0).toFixed(1);
 
       card.innerHTML = `
         <div>
-          <img src="${imgSource}" alt="${rest.nombre}" class="restaurant-img" onerror="this.src='https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=600&auto=format&fit=crop&q=80'">
+          <!-- Galería dual estética de fachada -->
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 6px; margin-bottom: 14px; border-radius: 8px; overflow: hidden; height: 170px;">
+            <img src="${img1}" alt="${rest.nombre}" style="width: 100%; height: 100%; object-fit: cover;">
+            <img src="${img2}" alt="${rest.nombre}" style="width: 100%; height: 100%; object-fit: cover;">
+          </div>
+
           <div class="card-meta">
             <span class="badge badge-green">Aprobado</span>
             <div class="rating-pill">
-              <span>★</span>
-              <span>${rankingDisplay}</span>
-              <small style="color: var(--text-muted); font-size: 0.75rem;">(${rest.totalResenas || 0})</small>
+              <span style="color: var(--accent-gold); font-size: 1.1rem;">★</span>
+              <span>${rankingFormatted}</span>
+              <small style="color: var(--text-muted);">(${rest.totalResenas || 0} reseñas)</small>
             </div>
           </div>
-          <h2 style="font-size: 1.25rem; margin-bottom: 8px;">${rest.nombre}</h2>
+
+          <h2 style="font-size: 1.3rem; margin-bottom: 6px; color: var(--text-primary);">${rest.nombre}</h2>
           <p style="color: var(--text-secondary); font-size: 0.88rem; margin-bottom: 12px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;">
             ${rest.descripcion}
           </p>
-          <p style="color: var(--text-muted); font-size: 0.8rem; margin-bottom: 20px;">
-            📍 ${rest.ubicacion}
-          </p>
+          <p style="color: var(--text-muted); font-size: 0.8rem; margin-bottom: 4px;">📍 ${rest.ubicacion}</p>
+          <p style="color: var(--text-muted); font-size: 0.78rem; margin-bottom: 20px;">🕒 ${rest.horario || 'Abierto'}</p>
         </div>
+
         <a href="restaurant-detail.html?id=${rest._id}" class="btn btn-primary" style="width: 100%;">
-          Ver Detalles y Platos
+          Ver Menú Completo y Reseñas
         </a>
       `;
-
       grid.appendChild(card);
     });
   }
 
-  // Event Listeners para Filtros
-  categoryFilter.addEventListener('change', (e) => {
-    fetchRestaurants(e.target.value);
-  });
+  categoryFilter.addEventListener('change', (e) => fetchRestaurants(e.target.value));
+  sortFilter.addEventListener('change', applySortingAndRender);
 
-  sortFilter.addEventListener('change', () => {
-    applySortingAndRender();
-  });
-
-  // Inicio
   loadCategories();
   fetchRestaurants();
 });
