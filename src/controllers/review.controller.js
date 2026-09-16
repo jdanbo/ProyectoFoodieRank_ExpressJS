@@ -28,14 +28,14 @@ async function createReview(req, res) {
         throw new Error('El restaurante no existe o no ha sido aprobado aún');
       }
 
-      // Evitar que el mismo usuario publique múltiples reseñas en un mismo restaurante
-      const existingReview = await reviewsCol.findOne(
-        { restauranteId: new ObjectId(restauranteId), usuarioId: new ObjectId(usuarioId) },
-        { session }
-      );
-      if (existingReview) {
-        throw new Error('Ya has publicado una reseña en este restaurante. Puedes editarla.');
-      }
+      // // Evitar que el mismo usuario publique múltiples reseñas en un mismo restaurante
+      // const existingReview = await reviewsCol.findOne(
+      //   { restauranteId: new ObjectId(restauranteId), usuarioId: new ObjectId(usuarioId) },
+      //   { session }
+      // );
+      // if (existingReview) {
+      //   throw new Error('Ya has publicado una reseña en este restaurante. Puedes editarla.');
+      // }
 
       // A. Insertar la nueva reseña
       const nuevaResena = {

@@ -100,6 +100,8 @@
       <section id="review-form-section" class="card" style="display: none;">
         <h3 style="margin-bottom: 15px;">Deja tu Calificación</h3>
         <form id="add-review-form">
+          <!-- Campo oculto blindado para el ID del restaurante -->
+          <input type="hidden" id="hidden-restaurant-id" name="restauranteId" value="">
           <div class="form-group">
             <label for="calificacion">Calificación (1 a 5 estrellas)</label>
             <select id="calificacion" class="form-control" style="cursor: pointer;" required>
