@@ -5,7 +5,7 @@ const { getDB } = require('../config/database');
 // Registrar nuevo usuario
 async function register(req, res) {
   try {
-    const { nombre, email, password, rol } = req.body;
+    const { nombre, email, password } = req.body;
     const db = getDB();
     const usersCollection = db.collection('users');
 
@@ -19,12 +19,13 @@ async function register(req, res) {
     const saltRounds = 10;
     const hashedPassword = await bcrypt.hash(password, saltRounds);
 
-    // 3. Crear el documento (por defecto rol 'usuario', a menos que se defina)
+    // 3. Crear el documento. El registro público SIEMPRE crea usuarios con rol 'usuario'.
+    // No se acepta un rol enviado desde el cliente para evitar que alguien se autoasigne como admin.
     const newUser = {
       nombre,
       email,
       password: hashedPassword,
-      rol: rol === 'admin' ? 'admin' : 'usuario',
+      rol: 'usuario',
       fechaCreacion: new Date()
     };
 

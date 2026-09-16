@@ -97,7 +97,10 @@ document.addEventListener('DOMContentLoaded', () => {
               <td>${r.ubicacion}</td>
               <td>${new Date(r.fechaCreacion).toLocaleDateString()}</td>
               <td>
-                <button class="btn btn-primary btn-sm" onclick="approveRest('${r._id}')">Aprobar</button>
+                <div class="action-group">
+                  <button class="btn btn-primary btn-sm" onclick="approveRest('${r._id}')">Aprobar</button>
+                  <button class="btn btn-danger btn-sm" onclick="rejectRest('${r._id}')">Denegar</button>
+                </div>
               </td>
             </tr>
           `;
@@ -118,7 +121,10 @@ document.addEventListener('DOMContentLoaded', () => {
               <td><strong>${d.nombre}</strong></td>
               <td>Q ${Number(d.precio).toFixed(2)}</td>
               <td>
-                <button class="btn btn-primary btn-sm" onclick="approveDish('${d._id}')">Aprobar</button>
+                <div class="action-group">
+                  <button class="btn btn-primary btn-sm" onclick="approveDish('${d._id}')">Aprobar</button>
+                  <button class="btn btn-danger btn-sm" onclick="rejectDish('${d._id}')">Denegar</button>
+                </div>
               </td>
             </tr>
           `;
@@ -139,6 +145,17 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   };
 
+  window.rejectRest = async (id) => {
+    if (!confirm('¿Seguro que deseas denegar este restaurante?')) return;
+    try {
+      await apiRequest(`/restaurants/${id}/reject`, 'PATCH', null, true);
+      showAlert('Restaurante denegado', 'success');
+      loadPending();
+    } catch (err) {
+      showAlert(err.message || 'Error al denegar restaurante');
+    }
+  };
+
   window.approveDish = async (dishId) => {
     try {
       await apiRequest(`/restaurants/dishes/${dishId}/approve`, 'PATCH', null, true);
@@ -146,6 +163,17 @@ document.addEventListener('DOMContentLoaded', () => {
       loadPending();
     } catch (err) {
       showAlert(err.message || 'Error al aprobar platillo');
+    }
+  };
+
+  window.rejectDish = async (dishId) => {
+    if (!confirm('¿Seguro que deseas denegar este platillo?')) return;
+    try {
+      await apiRequest(`/restaurants/dishes/${dishId}/reject`, 'PATCH', null, true);
+      showAlert('Platillo denegado', 'success');
+      loadPending();
+    } catch (err) {
+      showAlert(err.message || 'Error al denegar platillo');
     }
   };
 

@@ -4,6 +4,21 @@ document.addEventListener('DOMContentLoaded', async () => {
   const statRest = document.getElementById('stat-count-restaurants');
   const statReviews = document.getElementById('stat-count-reviews');
 
+  // Botón "Registrar mi Restaurante": interceptamos el clic para decidir el
+  // destino en el momento exacto (más confiable que reescribir el href al cargar).
+  // Sin sesión -> login.html. Con sesión -> crear.html (registrar restaurante/plato).
+  const ctaRestaurante = document.getElementById('cta-registrar-restaurante');
+  if (ctaRestaurante) {
+    ctaRestaurante.addEventListener('click', (e) => {
+      e.preventDefault();
+      if (Auth.getToken()) {
+        window.location.href = 'crear.html';
+      } else {
+        window.location.href = 'login.html';
+      }
+    });
+  }
+
   try {
     // 1. Obtener restaurantes aprobados
     const resRest = await apiRequest('/restaurants');

@@ -9,12 +9,45 @@ document.addEventListener('DOMContentLoaded', () => {
   const registerForm = document.getElementById('register-form');
   const alertBox = document.getElementById('auth-alert');
 
-  // Helper para pintar alertas visuales
+  // Helper para pintar alertas visuales simples (una sola línea)
   function showAlert(message, type = 'error') {
     if (!alertBox) return;
     alertBox.textContent = message;
     alertBox.className = `alert alert-${type}`;
     alertBox.style.display = 'block';
+  }
+
+  // Helper para pintar el aviso de notificaciones (puede tener varias líneas)
+  function showNotificationsBanner(notificaciones) {
+    if (!alertBox || !notificaciones || notificaciones.length === 0) return false;
+
+    const hayRechazos = notificaciones.some(n => n.estado === 'rechazado');
+
+    const lineas = notificaciones.map(n => {
+      const icono = n.estado === 'aprobado' ? '✅' : '❌';
+      if (n.tipo === 'restaurante') {
+        return `${icono} Tu restaurante "${n.nombre}" fue ${n.estado}.`;
+      }
+      return `${icono} Tu plato "${n.nombre}"${n.restaurante ? ` (en ${n.restaurante})` : ''} fue ${n.estado}.`;
+    });
+
+    alertBox.innerHTML = lineas.join('<br>');
+    alertBox.className = `alert alert-${hayRechazos ? 'error' : 'success'}`;
+    alertBox.style.display = 'block';
+    return true;
+  }
+
+  // Consulta si el usuario tiene solicitudes (restaurante/plato) recién decididas
+  async function checkPendingNotifications() {
+    try {
+      const res = await apiRequest('/restaurants/notifications/mine', 'GET', null, true);
+      if (res.ok && res.data && res.data.length > 0) {
+        return showNotificationsBanner(res.data);
+      }
+    } catch (err) {
+      console.error('No se pudieron consultar notificaciones:', err.message);
+    }
+    return false;
   }
 
   // 1. Manejador de Login
@@ -34,12 +67,18 @@ document.addEventListener('DOMContentLoaded', () => {
         if (response.ok && response.token) {
           // Guardar token JWT y datos de usuario en localStorage
           Auth.setSession(response.token, response.user);
-          showAlert('Ingreso exitoso. Redirigiendo...', 'success');
+
+          // Ver si hay avisos de restaurantes/platos recién aprobados o rechazados
+          const tieneNotificaciones = await checkPendingNotifications();
+
+          if (!tieneNotificaciones) {
+            showAlert('Ingreso exitoso. Redirigiendo...', 'success');
+          }
 
           setTimeout(() => {
             // Si es administrador, redirigir al panel; si no, al catálogo
             window.location.href = response.user.rol === 'admin' ? 'admin.html' : 'restaurants.html';
-          }, 1000);
+          }, tieneNotificaciones ? 4000 : 1000);
         }
       } catch (error) {
         showAlert(error.message || 'Error al iniciar sesión');
@@ -57,17 +96,17 @@ document.addEventListener('DOMContentLoaded', () => {
       const nombre = document.getElementById('nombre').value.trim();
       const email = document.getElementById('email').value.trim();
       const password = document.getElementById('password').value;
-      const rol = document.getElementById('rol').value;
 
       try {
         btn.disabled = true;
         btn.textContent = 'Registrando...';
 
+        // El registro público siempre crea usuarios con rol 'usuario'.
+        // No se envía ningún campo "rol" desde el cliente.
         const response = await apiRequest('/auth/register', 'POST', {
           nombre,
           email,
-          password,
-          rol
+          password
         });
 
         if (response.ok) {
