@@ -4,19 +4,23 @@ const {
   createReview,
   voteReview,
   getRestaurantReviews,
-  deleteReview
+  deleteReview,
+  getAllReviewsAdmin
 } = require('../../controllers/review.controller');
-const { requireAuth } = require('../../middlewares/auth.middleware');
+const { requireAuth, requireRole } = require('../../middlewares/auth.middleware');
 const {
   validateCreateReview,
   validateVote,
   validateReviewId
 } = require('../../middlewares/reviewValidators');
 
-// Rutas Públicas: Listar reseñas por ID de restaurante
+// Rutas Públicas
 router.get('/restaurant/:id', getRestaurantReviews);
 
-// Rutas Autenticadas
+// Rutas Administrativas (Declaradas ANTES de parámetros dinámicos para evitar colisiones)
+router.get('/admin/all', requireAuth, requireRole('admin'), getAllReviewsAdmin);
+
+// Rutas de Usuario Autenticado
 router.post('/', requireAuth, validateCreateReview, createReview);
 router.post('/:id/vote', requireAuth, validateVote, voteReview);
 router.delete('/:id', requireAuth, validateReviewId, deleteReview);

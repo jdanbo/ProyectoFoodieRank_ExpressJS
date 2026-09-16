@@ -254,9 +254,54 @@ async function deleteReview(req, res) {
   }
 }
 
+//ACTUALZIAR REVIEWS CONTROLLER
+// Listar todas las reseñas para moderación en panel admin
+async function getAllReviewsAdmin(req, res) {
+  try {
+    const db = getDB();
+    const reviews = await db.collection('reviews').aggregate([
+      {
+        $lookup: {
+          from: 'users',
+          localField: 'usuarioId',
+          foreignField: '_id',
+          as: 'autor'
+        }
+      },
+      { $unwind: { path: '$autor', preserveNullAndEmptyArrays: true } },
+      {
+        $lookup: {
+          from: 'restaurants',
+          localField: 'restauranteId',
+          foreignField: '_id',
+          as: 'restaurante'
+        }
+      },
+      { $unwind: { path: '$restaurante', preserveNullAndEmptyArrays: true } },
+      {
+        $project: {
+          _id: 1,
+          calificacion: 1,
+          comentario: 1,
+          fechaCreacion: 1,
+          'autor.nombre': 1,
+          'restaurante.nombre': 1,
+          'restaurante._id': 1
+        }
+      },
+      { $sort: { fechaCreacion: -1 } }
+    ]).toArray();
+
+    res.json({ ok: true, data: reviews });
+  } catch (error) {
+    res.status(500).json({ ok: false, message: 'Error al obtener reseñas', error: error.message });
+  }
+}
+
 module.exports = {
   createReview,
   voteReview,
   getRestaurantReviews,
-  deleteReview
+  deleteReview,
+  getAllReviewsAdmin
 };

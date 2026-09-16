@@ -185,11 +185,85 @@ async function approveDish(req, res) {
   }
 }
 
+// MODIFICACIONES DE GESTION DE RESTAURANTES PANEL ADMIN
+// Obtener TODOS los restaurantes (para el admin, sin filtrar por aprobado)
+async function getAllRestaurantsAdmin(req, res) {
+  try {
+    const db = getDB();
+    const restaurants = await db.collection('restaurants').find({}).toArray();
+    res.json({ ok: true, data: restaurants });
+  } catch (error) {
+    res.status(500).json({ ok: false, message: 'Error al obtener restaurantes', error: error.message });
+  }
+}
+
+// Editar restaurante (Solo Admin)
+async function updateRestaurant(req, res) {
+  try {
+    const { id } = req.params;
+    const { nombre, descripcion, ubicacion, horario, imagenUrl } = req.body;
+    const db = getDB();
+
+    const updateData = {
+      ...(nombre && { nombre: nombre.trim() }),
+      ...(descripcion && { descripcion: descripcion.trim() }),
+      ...(ubicacion && { ubicacion: ubicacion.trim() }),
+      ...(horario && { horario: horario.trim() }),
+      ...(imagenUrl && { imagenUrl: imagenUrl.trim() }),
+      fechaEdicion: new Date()
+    };
+
+    const result = await db.collection('restaurants').updateOne(
+      { _id: new ObjectId(id) },
+      { $set: updateData }
+    );
+
+    if (result.matchedCount === 0) {
+      return res.status(404).json({ ok: false, message: 'Restaurante no encontrado' });
+    }
+
+    res.json({ ok: true, message: 'Restaurante actualizado exitosamente' });
+  } catch (error) {
+    res.status(500).json({ ok: false, message: 'Error al actualizar', error: error.message });
+  }
+}
+
+// Eliminar restaurante (Solo Admin)
+async function deleteRestaurant(req, res) {
+  try {
+    const { id } = req.params;
+    const db = getDB();
+
+    await db.collection('restaurants').deleteOne({ _id: new ObjectId(id) });
+    await db.collection('dishes').deleteMany({ restauranteId: new ObjectId(id) });
+    await db.collection('reviews').deleteMany({ restauranteId: new ObjectId(id) });
+
+    res.json({ ok: true, message: 'Restaurante y datos vinculados eliminados' });
+  } catch (error) {
+    res.status(500).json({ ok: false, message: 'Error al eliminar', error: error.message });
+  }
+}
+
+// Listar platos pendientes de moderación
+async function getPendingDishes(req, res) {
+  try {
+    const db = getDB();
+    const dishes = await db.collection('dishes').find({ estado: 'pendiente' }).toArray();
+    res.json({ ok: true, data: dishes });
+  } catch (error) {
+    res.status(500).json({ ok: false, message: 'Error al obtener platos', error: error.message });
+  }
+}
+
 module.exports = {
   getRestaurants,
   getRestaurantById,
   createRestaurant,
   approveRestaurant,
   createDish,
-  approveDish
+  approveDish,
+  getAllRestaurantsAdmin, 
+  updateRestaurant,  
+  deleteRestaurant,   
+  getPendingDishes        
 };
