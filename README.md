@@ -1,4 +1,4 @@
-# 🍽️ FoodieRank — Plataforma de Calificación y Rankings Gastronómicos
+# FoodieRank — Plataforma de Calificación y Rankings Gastronómicos
 
 FoodieRank es una aplicación web full-stack construida con una arquitectura desacoplada para la exploración, registro, calificación y clasificación ponderada de restaurantes y platillos típicos e internacionales en Guatemala.
 
@@ -6,7 +6,7 @@ El sistema cuenta con un backend modular desarrollado en Node.js y Express conec
 
 ---
 
-## 📋 Tabla de Contenidos
+## Tabla de Contenidos
 
 1. Características Principales
 2. Stack Tecnológico
@@ -21,7 +21,7 @@ El sistema cuenta con un backend modular desarrollado en Node.js y Express conec
 
 ---
 
-## ✨ Características Principales
+## Características Principales
 
 * Transacciones ACID Reales: Procesamiento atómico en la creación de opiniones y emisión de votos con sesiones de MongoDB (session.withTransaction()), asegurando consistencia multi-documento.
 * Seguridad y Control de Acceso (RBAC): Autenticación mediante tokens JWT y Passport.js, distinguiendo entre roles de usuario (crítico gastronómico) y admin (moderador).
@@ -31,7 +31,7 @@ El sistema cuenta con un backend modular desarrollado en Node.js y Express conec
 
 ---
 
-## 🛠️ Stack Tecnológico
+## Stack Tecnológico
 
 ### Backend
 * Entorno de Ejecución: Node.js (v20+ / v24+)
@@ -48,10 +48,9 @@ El sistema cuenta con un backend modular desarrollado en Node.js y Express conec
 
 ---
 
-## 📁 Estructura del Repositorio
+## Estructura del Repositorio
 
 ProyectoFoodieRank/
-├── foodierank-backend/
 │   ├── src/
 │   │   ├── config/             (Conexión nativa a Mongo y estrategias de Passport)
 │   │   ├── controllers/        (Controladores: Auth, Categorías, Restaurantes, Reseñas)
@@ -89,7 +88,7 @@ ProyectoFoodieRank/
 
 ---
 
-## 📦 Requisitos Previos
+## Requisitos Previos
 
 * Node.js instalado (versión 18 LTS, 20 LTS o superior).
 * NPM (gestor de paquetes incluido con Node).
@@ -98,10 +97,10 @@ ProyectoFoodieRank/
 
 ---
 
-## ⚙️ Instalación y Configuración
+## Instalación y Configuración
 
 ### 1. Clonar el repositorio
-git clone https://github.com/tu-usuario/ProyectoFoodieRank.git
+git clone https://github.com/jdanbo/ProyectoFoodieRank_ExpressJS_Borja_Daniel_Mauricio.git
 cd ProyectoFoodieRank
 
 ### 2. Configurar el Backend
@@ -116,7 +115,7 @@ JWT_SECRET=clave_secreta_para_firmar_jwt_foodierank_2026
 
 ---
 
-## 🗄️ Población de Datos (Seeding)
+## Población de Datos (Seeding)
 
 Para cargar los 11 evaluadores iniciales, las categorías temáticas, los 8 restaurantes de Guatemala, los 24 platillos con imágenes y las 32 reseñas iniciales, ejecuta en foodierank-backend:
 
@@ -124,7 +123,7 @@ node seed.js
 
 ---
 
-## 🚀 Ejecución del Proyecto
+## Ejecución del Proyecto
 
 ### Iniciar el Backend
 En la carpeta foodierank-backend:
@@ -140,7 +139,7 @@ Visita la URL en tu navegador (ej. http://127.0.0.1:5500).
 
 ---
 
-## 📖 Documentación de la API (Swagger & Endpoints)
+## Documentación de la API (Swagger & Endpoints)
 
 La documentación interactiva OpenAPI 3.0 con Swagger UI se encuentra disponible en:
 http://localhost:3000/api/v1/docs
@@ -172,7 +171,7 @@ http://localhost:3000/api/v1/docs
 
 ---
 
-## 🧮 Reglas de Negocio y Algoritmo de Ranking
+## Reglas de Negocio y Algoritmo de Ranking
 
 El ranking mostrado en las tarjetas y detalles utiliza una función ponderada (src/utils/ranking.js):
 
@@ -183,10 +182,9 @@ El ranking mostrado en las tarjetas y detalles utiliza una función ponderada (s
 
 ---
 
-## 👥 Metodología SCRUM y Entregables
+## Metodología SCRUM y Entregables
 
 El proyecto se planificó y ejecutó bajo el marco de trabajo SCRUM, aplicando la convención de Conventional Commits (feat:, fix:, docs:) para el historial de control de versiones.
 
 * Documentación PDF: Encuentra el archivo de planeación en /docs/SCRUM_Planeacion.pdf con el desglose de historias de usuario, roles de equipo y planificación de Sprints.
 * Enlace a Video Demostrativo: [Enlace a Video de Presentación en YouTube / Drive](https://enlace-pendiente.com)
-'@ | Out-File -FilePath "README.md" -Encoding utf8
