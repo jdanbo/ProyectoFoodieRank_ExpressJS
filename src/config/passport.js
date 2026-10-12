@@ -5,7 +5,7 @@ const { getDB } = require('./database');
 
 const options = {
   jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
-  secretOrKey: process.env.JWT_SECRET || 'secreto_super_seguro_foodierank_2026'
+  secretOrKey: process.env.JWT_SECRET
 };
 
 passport.use(
